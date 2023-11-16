@@ -3,7 +3,8 @@ let logged = sessionStorage.getItem("logged");
 const session = localStorage.getItem("session");
 
 let data = {
-    transactions: []
+    transactions: [],
+    total: 0,
 };
 
 document.getElementById("button-logout").addEventListener("click", logout);
@@ -20,6 +21,17 @@ document.getElementById("transaction-form").addEventListener("submit", function(
     const date = document.getElementById("date-input").value;
     const type = document.querySelector('input[name="type-input"]:checked').value;
 
+    let total = document.getElementById("total");
+    let totalNumber = Number(total.textContent.replace("R$ ", "")).toFixed(2);
+  
+
+    if (value > totalNumber && type === "2") {
+        const confirmed = confirm("Atenção. Seu saldo após cadastrar essa despesa será negativo, deseja continuar?");
+        if (!confirmed) {
+        return;
+        }
+    }
+
     data.transactions.unshift({
         value: value, type: type, description: description, date: date
     });
@@ -32,7 +44,7 @@ document.getElementById("transaction-form").addEventListener("submit", function(
     getCashOut();
     getTotal();
 
-    alert("Lançamento adicionado com sucesso");
+    
 });
 
 checkLogged();
